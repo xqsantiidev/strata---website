@@ -11,6 +11,7 @@ import { useTimelineStore } from "@/lib/stores/timeline-store";
 import { useRepoStore } from "@/lib/stores/repo-store";
 import { getFilesAtCommit } from "@/lib/processing/commit-parser";
 import { Button } from "@/components/ui/button";
+import { TokenInput } from "@/components/controls/token-input";
 import type { FileNode } from "@/types/visualization";
 import {
   ArrowLeft,
@@ -81,17 +82,28 @@ export default function VisualizePage() {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
 
+  const isRateLimitError = error?.includes("rate limit");
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)] p-6">
-        <div className="max-w-md w-full text-center space-y-4">
+        <div className="max-w-md w-full text-center space-y-6">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--destructive)]/10">
             <AlertCircle className="w-8 h-8 text-[var(--destructive)]" />
           </div>
-          <h1 className="text-xl font-semibold text-[var(--foreground)]">
-            Failed to Load Repository
-          </h1>
-          <p className="text-[var(--muted-foreground)]">{error}</p>
+          <div className="space-y-2">
+            <h1 className="text-xl font-semibold text-[var(--foreground)]">
+              Failed to Load Repository
+            </h1>
+            <p className="text-[var(--muted-foreground)]">{error}</p>
+          </div>
+          
+          {isRateLimitError && (
+            <div className="text-left p-4 rounded-lg border border-[var(--border)] bg-[var(--card)]">
+              <TokenInput />
+            </div>
+          )}
+          
           <div className="flex gap-3 justify-center">
             <Button variant="outline" onClick={() => router.push("/")}>
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -99,7 +111,7 @@ export default function VisualizePage() {
             </Button>
             <Button onClick={refetch}>
               <RefreshCw className="w-4 h-4 mr-2" />
-              Retry
+              {isRateLimitError ? "Retry with Token" : "Retry"}
             </Button>
           </div>
         </div>
