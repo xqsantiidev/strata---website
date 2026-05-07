@@ -143,9 +143,9 @@ export async function getCommitDetails(
     parents: data.parents.map((p) => ({ sha: p.sha })),
     stats: data.stats
       ? {
-          additions: data.stats.additions,
-          deletions: data.stats.deletions,
-          total: data.stats.total,
+          additions: data.stats.additions ?? 0,
+          deletions: data.stats.deletions ?? 0,
+          total: data.stats.total ?? 0,
         }
       : undefined,
     files: data.files?.map((f) => ({

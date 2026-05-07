@@ -11,20 +11,6 @@ export function getOctokit(token?: string | null): Octokit {
     octokitInstance = new Octokit({
       auth: token || undefined,
       userAgent: "codebase-time-machine/1.0",
-      throttle: {
-        onRateLimit: (retryAfter, options) => {
-          console.warn(
-            `Rate limit hit for ${options.method} ${options.url}. Retrying after ${retryAfter}s`
-          );
-          return true; // retry
-        },
-        onSecondaryRateLimit: (retryAfter, options) => {
-          console.warn(
-            `Secondary rate limit hit for ${options.method} ${options.url}`
-          );
-          return false; // don't retry
-        },
-      },
     });
   }
   return octokitInstance;
